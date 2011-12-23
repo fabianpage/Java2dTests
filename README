@@ -1,0 +1,5 @@
+start with:
+
+- sbt
+- re:start
+- ~ compile
