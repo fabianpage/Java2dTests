@@ -38,11 +38,11 @@ object Draw {
     }
   }
 
-  def drawSomeThing(g:Graphics) {
+  def drawSomeThing(g:Graphics, i:Int) {
     val g2d:Graphics2D = g.asInstanceOf[Graphics2D]
-
+    
     val font = g.getFont
-    val font2 = font.deriveFont(25.2.toFloat)
+    val font2 = font.deriveFont(20.toFloat)
     g.setFont(font2)
 
     val fm = g.getFontMetrics()
@@ -82,17 +82,99 @@ object Draw {
       SmallBlock()
     )
     
-    g.drawString("Total Height: " + BlockListLenght(aDrawList, de), 20, 20)
+    val letterList = List(
+      ('A', 100),
+      ('B', 10),
+      ('C', 50),
+      ('D', 10),
+      ('E', 10),
+      ('F', 10),
+      ('G', 10),
+      ('H', 80),
+      ('I', 10),
+      ('J', 200),
+      ('K', 10),
+      ('L', 10),
+      ('M', 90),
+      ('N', 10),
+      ('O', 10),
+      ('P', 10),
+      ('Q', 10),
+      ('R', 70),
+      ('S', 10),
+      ('T', 10),
+      ('U', 20),
+      ('V', 10),
+      ('W', 10),
+      ('X', 30),
+      ('Y', 10),
+      ('Z', 10)
+    )
 
+    // ugly as hell
+    def generateBlockList(ll:List[(Char, Int)], nrOfFullChars:Int):List[Block] = {
+      val nl = 1.to(ll.length)
+      val zl = nl.zip(ll)
+      val sl = zl.sortBy(-_._2._2)
 
-    drawBlockList(aDrawList, 0, de)
+      def repl(leftNr:Int, lll:List[(Char, Int)]):List[(Int, Block)] = {
+        lll match {
+          case x :: xs => {
+            if (leftNr > 0) {
+              (x._2, LetterBlock(x._1)) :: repl(leftNr - 1, xs)
+            } else {
+              (x._2, SmallBlock()) :: repl(leftNr - 1, xs)
+            }
+          }
+          case _ => Nil
+        }
+        
+      }
+      
+      val ml = sl.map(t => (t._2._1, t._1)).toList
+      
+      val ul = repl(nrOfFullChars, ml)
+      val uls = ul.sortBy(_._1)
+      uls.map(_._2)
+
+    }
+
+    // even uglyer doesn't need to be a method its only a replace
+    def modLetterList(index: Int, ll:List[(Char, Int)]):List[(Char, Int)]  = {
+      def local(i: Int, l:List[(Char, Int)]):List[(Char, Int)] = {
+        l match {
+          case x :: xs => {
+            if(i != 0) {
+              x :: local(i - 1, xs)
+            } else {
+              x.copy(_2 = x._2 + 100) :: local(i - 1, xs)
+            }                      
+          }
+          case _ => Nil
+        }
+      }
+
+      local(index, ll)
+    }
+    
+    val aSecondDrawList = generateBlockList(modLetterList(i,letterList), 5)
+
+    g.drawString("Total Height: " + BlockListLenght(aSecondDrawList, de), 20, 20)
+
+    drawBlockList(aSecondDrawList, 0, de)
   }
 }
 
 class GamePanel extends JPanel{
+  var i = 1
   override def paintComponent(g: Graphics) {
     super.paintComponent(g)
-    Draw.drawSomeThing(g)
+    Draw.drawSomeThing(g,i)
+    i = if(i > 26 || i < 0) {
+      1
+    }   else {
+      i + 1
+    }
   }
 }
 
@@ -105,6 +187,6 @@ object GamePanelMain extends App {
   
   while(true){
     f.repaint()
-    Thread.sleep(800)
+    Thread.sleep(1000)
   }
 }
