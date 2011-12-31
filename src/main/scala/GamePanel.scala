@@ -1,3 +1,4 @@
+import java.awt.event.{MouseEvent, MouseMotionListener}
 import java.awt.geom.Rectangle2D
 import java.awt.{Graphics2D, Graphics}
 import javax.swing.{JFrame, JPanel}
@@ -10,6 +11,8 @@ object Draw {
     def draw(i:Int,  de:DrawEnvironment):Int
     def h(de:DrawEnvironment):Int
   }
+
+  def delay = 50
 
   case class SmallBlock() extends Block {
     def draw(i:Int,  de:DrawEnvironment) = {
@@ -38,7 +41,7 @@ object Draw {
     }
   }
 
-  def drawSomeThing(g:Graphics, i:Int) {
+  def drawSomeThing(g:Graphics, i:Int, mousePos:(Int, Int)) {
     val g2d:Graphics2D = g.asInstanceOf[Graphics2D]
     
     val font = g.getFont
@@ -156,20 +159,35 @@ object Draw {
 
       local(index, ll)
     }
-    
-    val aSecondDrawList = generateBlockList(modLetterList(i,letterList), 5)
+
+    val selctedLetter = (mousePos._2 / 400.0 * 26 + 1).toInt;
+
+    val aSecondDrawList = generateBlockList(modLetterList(selctedLetter,letterList), 2)
 
     g.drawString("Total Height: " + BlockListLenght(aSecondDrawList, de), 20, 20)
+    g.drawString("Mouse x: " + mousePos._1 + ", y: " + mousePos._2, 20, 40)
+    g.drawString("Selected Letter: " + selctedLetter, 20, 60)
 
     drawBlockList(aSecondDrawList, 0, de)
   }
 }
 
-class GamePanel extends JPanel{
+class GamePanel extends JPanel with MouseMotionListener{
   var i = 1
+  
+  var mousePos = (0,0)
+
+  def mouseDragged(p1: MouseEvent) {
+    mousePos = (p1.getX, p1.getY+1000)
+  }
+
+  def mouseMoved(p1: MouseEvent) {
+    mousePos = (p1.getX, p1.getY)
+  }
+
   override def paintComponent(g: Graphics) {
     super.paintComponent(g)
-    Draw.drawSomeThing(g,i)
+    Draw.drawSomeThing(g,i, mousePos)
     i = if(i > 26 || i < 0) {
       1
     }   else {
@@ -180,13 +198,15 @@ class GamePanel extends JPanel{
 
 object GamePanelMain extends App {
   val f = new JFrame()
+  val g = new GamePanel()
   f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
   f.setSize(400,400)
-  f.add(new GamePanel())
+  f.add(g)
+  f.addMouseMotionListener(g)
   f.setVisible(true)
   
   while(true){
     f.repaint()
-    Thread.sleep(1000)
+    Thread.sleep(Draw.delay)
   }
 }
