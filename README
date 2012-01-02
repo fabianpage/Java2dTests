@@ -1,5 +1,5 @@
-start with:
+run with:
 
-- sbt
-- re:start
-- ~ compile
+$ sbt
+$ re:start
+$ ~ compile
