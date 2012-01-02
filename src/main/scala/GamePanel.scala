@@ -54,7 +54,7 @@ object Draw {
     val h: Double = (bb.getHeight * 0.8)
     val w: Double = bb.getWidth
 
-    val de = DrawEnvironment(g,200,50,w.toInt,h.toInt)
+    val de = DrawEnvironment(g,200,80,w.toInt,h.toInt)
 
     val aDrawList = List(
       SmallBlock(),
@@ -142,7 +142,7 @@ object Draw {
 
     }
 
-    // even uglyer doesn't need to be a method its only a replace
+    // even uglyer
     def modLetterList(index: Int, ll:List[(Char, Int)]):List[(Char, Int)]  = {
       def local(i: Int, l:List[(Char, Int)]):List[(Char, Int)] = {
         l match {
@@ -164,11 +164,17 @@ object Draw {
 
     val aSecondDrawList = generateBlockList(modLetterList(selctedLetter,letterList), 2)
 
-    g.drawString("Total Height: " + BlockListLenght(aSecondDrawList, de), 20, 20)
+    val upperHeight = aSecondDrawList.slice(0,selctedLetter).foldLeft(0)((sum, block) => sum + block.h(de))
+
+    val newStart = de.y0 - upperHeight
+    
+    val de2 = de.copy(y0 = newStart)
+    
+    g.drawString("Total Height: " + BlockListLenght(aSecondDrawList, de2), 20, 20)
     g.drawString("Mouse x: " + mousePos._1 + ", y: " + mousePos._2, 20, 40)
     g.drawString("Selected Letter: " + selctedLetter, 20, 60)
 
-    drawBlockList(aSecondDrawList, 0, de)
+    drawBlockList(aSecondDrawList, 0, de2)
   }
 }
 
@@ -178,7 +184,7 @@ class GamePanel extends JPanel with MouseMotionListener{
   var mousePos = (0,0)
 
   def mouseDragged(p1: MouseEvent) {
-    mousePos = (p1.getX, p1.getY+1000)
+    mousePos = (p1.getX, p1.getY)
   }
 
   def mouseMoved(p1: MouseEvent) {
