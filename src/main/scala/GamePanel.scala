@@ -131,7 +131,6 @@ object Draw {
           }
           case _ => Nil
         }
-        
       }
       
       val ml = sl.map(t => (t._2._1, t._1)).toList
@@ -156,7 +155,6 @@ object Draw {
           case _ => Nil
         }
       }
-
       local(index, ll)
     }
 
