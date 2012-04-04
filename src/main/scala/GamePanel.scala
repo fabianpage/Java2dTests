@@ -158,7 +158,8 @@ object Draw {
       local(index, ll)
     }
 
-    val selctedLetter = (mousePos._2 / 400.0 * 26 + 1).toInt;
+    val selctedLetter: Int = (mousePos._2 / 400.0 * 26 + 1).toInt;
+    //val selctedLetter: Int = i
 
     val aSecondDrawList = generateBlockList(modLetterList(selctedLetter,letterList), 2)
 
@@ -168,11 +169,15 @@ object Draw {
     
     val de2 = de.copy(y0 = newStart)
     
-    g.drawString("Total Height: " + BlockListLenght(aSecondDrawList, de2), 20, 20)
-    g.drawString("Mouse x: " + mousePos._1 + ", y: " + mousePos._2, 20, 40)
-    g.drawString("Selected Letter: " + selctedLetter, 20, 60)
+    //g.drawString("Total Height: " + BlockListLenght(aSecondDrawList, de2), 20, 20)
+    //g.drawString("Mouse x: " + mousePos._1 + ", y: " + mousePos._2, 20, 40)
+    //g.drawString("Selected Letter: " + selctedLetter, 20, 60)
 
     drawBlockList(aSecondDrawList, 0, de2)
+    g.drawLine(218,78,230,48)
+    g.drawLine(218,100,230,140)
+    val de3 = de2.copy(x0 = 230, y0 = 36)
+    drawBlockList(generateBlockList(letterList,2), 0, de3)
   }
 }
 
