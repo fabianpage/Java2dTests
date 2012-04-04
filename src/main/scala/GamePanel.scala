@@ -161,7 +161,7 @@ object Draw {
     val selctedLetter: Int = (mousePos._2 / 400.0 * 26 + 1).toInt;
     //val selctedLetter: Int = i
 
-    val aSecondDrawList = generateBlockList(modLetterList(selctedLetter,letterList), 2)
+    val aSecondDrawList = generateBlockList(modLetterList(selctedLetter,letterList), 4)
 
     val upperHeight = aSecondDrawList.slice(0,selctedLetter).foldLeft(0)((sum, block) => sum + block.h(de))
 
@@ -177,7 +177,12 @@ object Draw {
     g.drawLine(218,78,230,48)
     g.drawLine(218,100,230,140)
     val de3 = de2.copy(x0 = 230, y0 = 36)
-    drawBlockList(generateBlockList(letterList,2), 0, de3)
+    drawBlockList(generateBlockList(letterList.updated(selctedLetter,('a',selctedLetter*30)),5), 0, de3)
+    
+    g.drawLine(100,10,300,10)
+    g.drawLine(100,10, 100, 175)
+    g.drawLine(100,175,300,175)
+    g.drawLine(300,10,300,175)
   }
 }
 
